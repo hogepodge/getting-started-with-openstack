@@ -14,24 +14,27 @@ video. These are the same (updated) materials used to present that session.
 
 
 1. Install Vagrant: 
+```https://www.vagrantup.com/docs/installation/
+```
 
-   ```https://www.vagrantup.com/docs/installation/```
-
-2. Download the Vagrantfile: https://radez.fedorapeople.org/Vagrantfile
+2. Download the Vagrantfile: https://radez.fedorapeople.org/Vagrantfile:
 
 3. Start the virtual maching and install OpenStack
 
-   ```$ vagrant up```
+```$ vagrant up
+```
 
    Wait for the install to complete, it will take some time.
 
 ## Pausing the Installation
 
 To suspend your installation you can use:
-```$ vagrant halt```
+```$ vagrant halt
+```
 
 To resume it:
-```$ vagrant up```
+```$ vagrant up
+```
 
 ## Troubleshooting.
 
@@ -41,7 +44,8 @@ out as quickly as possible.
 If your vagrant environment fails for any reason, you can start off with
 a clean slate by destroying the VM:
 
-```$vagrant destroy -f```
+```$vagrant destroy -f
+```
 
 Then beginning the process again with `vagrant up`.
 
