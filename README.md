@@ -2,21 +2,17 @@
 A little project to quickly set up all-in-one OpenStack using Vagrant
 
 ## Introduction
-The following will deploy a Virtual Machine on your laptop that will enable you to
-follow along step by step during the session.
-
-## Preparation:
-
-These instructions should download a CentOS7 Vagrant Box, Install RDO and provide
-you an environment to follow along with in the original [Getting Started With
-OpenStack](https://www.openstack.org/videos/austin-2016/getting-started-with-openstack)
+The Vagrantfile provided in this project will download and launch a CentOS 7 Vagrant Box,
+install RDO, and provide you an environment to follow along with in the original
+[Getting Started With OpenStack](https://www.openstack.org/videos/austin-2016/getting-started-with-openstack)
 video. These are the same (updated) materials used to present that session.
 
+## Installing OpenStack
 
 1. Install Vagrant from: https://www.vagrantup.com/docs/installation/
 2. Download this repository: `git clone https://github.com/hogepodge/getting-started-with-openstack`
 3. Start the virtual machine and install OpenStack: `$ cd getting-started-with-openstack; vagrant up`
-Wait for the install to complete, it will take some time.
+4. Wait for the machine startup and installation to complete, it will take some time.
 
 ## Pausing the Installation
 
@@ -24,7 +20,7 @@ To suspend your installation you can use: `$ vagrant halt`
 
 To resume it:`$ vagrant up`
 
-## Troubleshooting.
+## Troubleshooting
 
 If you have trouble, please file a issue or pull request and we'll help you
 out as quickly as possible.
