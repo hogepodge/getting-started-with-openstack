@@ -13,28 +13,16 @@ OpenStack](https://www.openstack.org/videos/austin-2016/getting-started-with-ope
 video. These are the same (updated) materials used to present that session.
 
 
-1. Install Vagrant: 
-```https://www.vagrantup.com/docs/installation/
-```
-
-2. Download the Vagrantfile: https://radez.fedorapeople.org/Vagrantfile:
-
-3. Start the virtual maching and install OpenStack
-
-```$ vagrant up
-```
-
-   Wait for the install to complete, it will take some time.
+1. Install Vagrant from: https://www.vagrantup.com/docs/installation/
+2. Download this repository: `git clone https://github.com/hogepodge/getting-started-with-openstack`
+3. Start the virtual machine and install OpenStack: `$ cd getting-started-with-openstack; vagrant up`
+Wait for the install to complete, it will take some time.
 
 ## Pausing the Installation
 
-To suspend your installation you can use:
-```$ vagrant halt
-```
+To suspend your installation you can use: `$ vagrant halt`
 
-To resume it:
-```$ vagrant up
-```
+To resume it:`$ vagrant up`
 
 ## Troubleshooting.
 
@@ -42,12 +30,9 @@ If you have trouble, please file a issue or pull request and we'll help you
 out as quickly as possible.
 
 If your vagrant environment fails for any reason, you can start off with
-a clean slate by destroying the VM:
+a clean slate by destroying the VM: `$vagrant destroy -f`
 
-```$vagrant destroy -f
-```
-
-Then beginning the process again with `vagrant up`.
+Then beginning the process again with `$vagrant up`.
 
 ## Acknowledgments
 
