@@ -11,7 +11,7 @@ if rpm -q NetworkManager; then
   service network start
 fi
 if ! ls packstack-answers*; then
-  yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-newton/rdo-release-newton-4.noarch.rpm
+  yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-ocata/rdo-release-ocata-2.noarch.rpm
   yum update -y
   yum install -y openstack-packstack
   packstack --provision-demo=n --install-hosts=192.168.37.2 --enable-rdo-testing=y
@@ -80,11 +80,11 @@ Vagrant.configure(2) do |config|
         lv.memory = 8192
         lv.cpus = 4
   end
-  config.vm.provider :virtualbox do |vb|
-        vb.memory = 8192
-        vb.cpus = 4
+  config.vm.provider :vmware_fusion do |vm|
+        vm.memory = 8192
+        vm.cpus = 4
   end
-  config.vm.provider :vmware_fusion do |vb|
+  config.vm.provider :virtualbox do |vb|
         vb.memory = 8192
         vb.cpus = 4
   end
