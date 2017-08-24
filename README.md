@@ -7,6 +7,18 @@ install RDO, and provide you an environment to follow along with in the original
 [Getting Started With OpenStack](https://www.openstack.org/videos/austin-2016/getting-started-with-openstack)
 video. These are the same (updated) materials used to present that session.
 
+## Requirements
+Your machine must meet a minimum set of requirements to successfully
+run an all-in-one OpenStack installation. At a minimum you need:
+
+1. A compatible hypervisor.
+  * Linux: KVM, Virtual Box.
+  * OS X: VMware Fusion, Virtual Box.
+  * Windows: VMWare Workstation, Virtual Box.
+2. Vagrant to control your hypervisor, along with supported provider.
+3. At least 8 GB of RAM to support a 6 GB virtual machine.
+  * 12 GB or more to support an 8 GB virtual machine is highly recommended.
+
 ## Installing OpenStack
 
 1. Install Vagrant from: https://www.vagrantup.com/docs/installation/
