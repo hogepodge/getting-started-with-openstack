@@ -11,7 +11,13 @@ if rpm -q NetworkManager; then
   service network start
 fi
 if ! ls packstack-answers*; then
-  yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-ocata/rdo-release-ocata-2.noarch.rpm
+  yum-config-manager --enable cr
+  yum update -y
+  cd /etc/yum.repos.d/
+  curl -O https://trunk.rdoproject.org/rdo-reqs-pre-7.3/rdo-reqs-pre-7.3.repo
+  yum -y install yum-plugin-priorities
+  curl -O https://trunk.rdoproject.org/centos7/delorean-deps.repo
+  curl -O https://trunk.rdoproject.org/centos7/current-passed-ci/delorean.repo
   yum update -y
   yum install -y openstack-packstack
   packstack --provision-demo=n --install-hosts=192.168.37.2 --enable-rdo-testing=y
