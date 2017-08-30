@@ -17,17 +17,26 @@ if ! ls packstack-answers*; then
   curl -O https://trunk.rdoproject.org/rdo-reqs-pre-7.3/rdo-reqs-pre-7.3.repo
   yum -y install yum-plugin-priorities
   curl -O https://trunk.rdoproject.org/centos7/delorean-deps.repo
-  curl -O https://trunk.rdoproject.org/centos7/current-passed-ci/delorean.repo
+  curl -O https://trunk.rdoproject.org/centos7/current/delorean.repo
   yum update -y
-  yum install -y openstack-packstack
-  packstack --provision-demo=n --install-hosts=192.168.37.2 --enable-rdo-testing=y
+  yum install -y python-setuptools openstack-packstack
+  CONFIG_HEAT_INSTALL=y CONFIG_MAGNUM_INSTALL=y CONFIG_CEILOMETER_INSTALL=n CONFIG_AODH_INSTALL=n CONFIG_GNOCCHI_INSTALL=y packstack \
+            --provision-demo=n \
+            --install-hosts=192.168.11.20 \
+            --enable-rdo-testing=y \
+            --os-neutron-ovs-bridge-mappings=extnet:br-ex \
+            --os-neutron-ovs-bridge-interfaces=br-ex:eth2 \
+            --os-neutron-ml2-type-drivers=vxlan,flat \
+            --os-heat-install=y \
+            --os-ceilometer-install=n \
+            --os-aodh-install=n \
+            --os-gnocchi-install=n
 fi
 
 source ~/keystonerc_admin
 cd /tmp
 curl -O http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
 openstack image create --public --file cirros-0.3.4-x86_64-disk.img cirros
-
 if ! ovs-vsctl show | grep eth1; then
   ovs-vsctl add-port br-int eth1
 fi
@@ -38,9 +47,8 @@ fi
 cat > /etc/sysconfig/network-scripts/ifcfg-br-int << EOF
 DEVICE=br-int
 BOOTPROTO=static
-IPADDR=192.168.37.2
-PREFIX=24
-NM_CONTROLLED=no
+IPADDR=192.168.11.20
+PREFIX=24 NM_CONTROLLED=no
 ONBOOT=yes
 EOF
 cat > /etc/sysconfig/network-scripts/ifcfg-eth1 << EOF
@@ -53,8 +61,8 @@ EOF
 cat > /etc/sysconfig/network-scripts/ifcfg-br-ex << EOF
 DEVICE=br-ex
 BOOTPROTO=static
-IPADDR=172.24.4.226
-PREFIX=28
+IPADDR=192.168.22.226
+PREFIX=24
 NM_CONTROLLED=no
 ONBOOT=yes
 EOF
@@ -67,6 +75,27 @@ PEERDNS=no
 EOF
 
 service network restart
+
+cat > /etc/neutron/plugins/ml2/linuxbridge_agent.ini << EOF
+[linux_bridge]
+physical_interface_mappings = provider:eth2
+EOF
+chgrp neutron /etc/neutron/plugins/ml2/linuxbridge_agent.ini 
+
+openstack network create --share --external --provider-physical-network extnet \
+                         --provider-network-type flat extnet
+openstack subnet create --network extnet \
+                        --allocation-pool start=192.168.22.100,end=192.168.22.200 \
+                        --dns-nameserver=8.8.8.8 --gateway 192.168.22.1 \
+                        --subnet-range 192.168.22.0/24 extnet
+
+openstack network create --share private
+openstack subnet create --subnet-range 10.0.0.0/24 --network private "10.0.0.0/24"
+openstack router create router
+openstack router add subnet router "10.0.0.0/24"
+neutron router-gateway-set router extnet
+service neutron-dhcp-agent restart
+
 SCRIPT
 
 Vagrant.configure(2) do |config|
@@ -78,8 +107,8 @@ Vagrant.configure(2) do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "centos/7"
   config.vm.provision "shell", inline: $script
-  config.vm.network "private_network", ip: "192.168.37.2", netmask: "255.255.255.0", dhcp_enabled: false, forward_mode: "none"
-  config.vm.network "private_network", ip: "172.24.4.226", netmask: "255.255.255.240", dhcp_enabled: false
+  config.vm.network "private_network", ip: "192.168.11.20", netmask: "255.255.255.0"
+  config.vm.network "private_network", ip: "192.168.22.226", netmask: "255.255.255.0"
       
 
   config.vm.provider :libvirt do |lv|
