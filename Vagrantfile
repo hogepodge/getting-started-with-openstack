@@ -11,10 +11,20 @@ if rpm -q NetworkManager; then
   service network start
 fi
 if ! ls packstack-answers*; then
-  yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-pike/rdo-release-pike-2.noarch.rpm
+  yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-pike/rdo-release-pike-1.noarch.rpm
   yum update -y
   yum install -y openstack-packstack
-  packstack --provision-demo=n --install-hosts=192.168.37.2 --enable-rdo-testing=y
+  CONFIG_HEAT_INSTALL=y CONFIG_MAGNUM_INSTALL=n CONFIG_CEILOMETER_INSTALL=n CONFIG_AODH_INSTALL=n CONFIG_GNOCCHI_INSTALL=y packstack \
+            --provision-demo=y \
+            --install-hosts=192.168.33.30 \
+            --enable-rdo-testing=y \
+            --os-neutron-ovs-bridge-mappings=extnet:br-ex \
+            --os-neutron-ovs-bridge-interfaces=br-ex:eth2 \
+            --os-neutron-ml2-type-drivers=vxlan,flat \
+            --os-heat-install=y \
+            --os-ceilometer-install=n \
+            --os-aodh-install=n \
+            --os-gnocchi-install=n
 fi
 
 source ~/keystonerc_admin
@@ -32,7 +42,7 @@ fi
 cat > /etc/sysconfig/network-scripts/ifcfg-br-int << EOF
 DEVICE=br-int
 BOOTPROTO=static
-IPADDR=192.168.37.2
+IPADDR=192.168.33.30
 PREFIX=24
 NM_CONTROLLED=no
 ONBOOT=yes
@@ -72,8 +82,8 @@ Vagrant.configure(2) do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "centos/7"
   config.vm.provision "shell", inline: $script
-  config.vm.network "private_network", ip: "192.168.37.2", netmask: "255.255.255.0", dhcp_enabled: false, forward_mode: "none"
-  config.vm.network "private_network", ip: "172.24.4.226", netmask: "255.255.255.240", dhcp_enabled: false
+  config.vm.network "private_network", ip: "192.168.33.30", netmask: "255.255.255.0", dhcp_enabled: true
+  config.vm.network "private_network", ip: "172.24.4.226", netmask: "255.255.255.240", dhcp_enabled: true
       
 
   config.vm.provider :libvirt do |lv|
