@@ -23,8 +23,7 @@ if ! ls packstack-answers*; then
             --os-neutron-ml2-type-drivers=vxlan,flat \
             --os-heat-install=y \
             --os-ceilometer-install=n \
-            --os-aodh-install=n \
-            --os-gnocchi-install=n
+            --os-aodh-install=n
 fi
 
 source ~/keystonerc_admin
