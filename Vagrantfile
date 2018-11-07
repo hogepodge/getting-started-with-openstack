@@ -6,11 +6,13 @@
 $script = <<SCRIPT
 if rpm -q NetworkManager; then
   service NetworkManager stop
+  kill $(pgrep dhclient)
   yum remove -y NetworkManager
   chkconfig network on
   service network start
 fi
 if ! ls packstack-answers*; then
+  yum install -y e2fsprogs
   yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-pike/rdo-release-pike-1.noarch.rpm
   yum update -y
   yum install -y openstack-packstack
@@ -23,8 +25,7 @@ if ! ls packstack-answers*; then
             --os-neutron-ml2-type-drivers=vxlan,flat \
             --os-heat-install=y \
             --os-ceilometer-install=n \
-            --os-aodh-install=n \
-            --os-gnocchi-install=n
+            --os-aodh-install=n
 fi
 
 source ~/keystonerc_admin
