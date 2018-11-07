@@ -6,6 +6,7 @@
 $script = <<SCRIPT
 if rpm -q NetworkManager; then
   service NetworkManager stop
+  kill $(pgrep dhclient)
   yum remove -y NetworkManager
   chkconfig network on
   service network start
